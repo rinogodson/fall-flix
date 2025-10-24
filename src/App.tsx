@@ -20,7 +20,7 @@ function App() {
         id="bg"
         className="absolute z-[-100] w-screen h-screen bg-[url(bg.jpg)] bg-cover blur-[10px]"
       ></div>
-      <div className="perspective-distant perspective-origin-center h-screen w-screen flex justify-center items-center">
+      <div className="perspective-distant perspective-origin-center h-screen w-screen flex flex-col gap-10 justify-center items-center">
         <div
           style={{
             translate: `0px ${mosPos.y * 0.01}px`,
@@ -55,24 +55,42 @@ function App() {
         </div>
         <div
           style={{
-            height: `${windowCtx.height}px`,
+            height: `calc(${windowCtx.height}px + 150px)`,
             width: `${windowCtx.width}px`,
             translate: `${mosPos.x * 0.01}px ${mosPos.y * 0.01}px`,
           }}
-          className="bg-linear-to-b to-black/50 from-black/40 p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
+          className="bg-[url(texture.webp)] bg-cover p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
         >
-          <div className="w-full h-full border-white/10 border-2 relative bg-black/10 rounded-xl overflow-hidden">
-            <div className="h-full w-full absolute top-0 left-0"></div>
-            <iframe
-              src="https://www.youtube.com/embed/WXk7yDqsKxs?si=lgrT2B_V_OAMZLCK&amp;controls=0"
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-              className="h-full w-full"
-            ></iframe>
+          <div
+            className={`w-full h-full grid grid-rows-[${windowCtx.height}px_1fr] border-white/10 border-2 relative bg-black/10 rounded-xl overflow-hidden`}
+          >
+            <div>
+              <div
+                style={{ height: `${windowCtx.height}px` }}
+                className="w-full absolute top-0 left-0"
+              ></div>
+              <iframe
+                style={{ height: `${windowCtx.height}px` }}
+                src="https://www.youtube.com/embed/WXk7yDqsKxs?si=lgrT2B_V_OAMZLCK&amp;controls=0"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="h-full w-full"
+              ></iframe>
+            </div>
+            <div className="h-full bg-[url(texture-rotated.webp)] bg-cover">
+              <div className="h-full w-full bg-linear-to-b from-black/20 to-black/50">
+                Hello
+              </div>
+            </div>
           </div>
         </div>
+        {/* <div className="bg-black/10 w-full h-20 flex justify-center items-center"> */}
+        {/*   <Icons.SkipBack /> */}
+        {/*   <Icons.Play /> */}
+        {/*   <Icons.SkipForward /> */}
+        {/* </div> */}
       </div>
     </>
   );
