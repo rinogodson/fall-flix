@@ -12,6 +12,10 @@ const songs: { name: string; icon: string }[] = [
     icon: "Bird",
   },
   {
+    name: "Wind",
+    icon: "Wind",
+  },
+  {
     name: "White Noise",
     icon: "AudioWaveform",
   },
