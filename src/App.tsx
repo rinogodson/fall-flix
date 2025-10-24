@@ -1,11 +1,16 @@
 import React from "react";
 import songs from "./providers/autumn-giver";
+import { motion } from "motion/react";
 import * as Icons from "lucide-react";
 
 function App() {
   const mosPos = useMousePos();
 
-  const [appCtx, setAppCtx] = React.useState({
+  const [appCtx, setAppCtx] = React.useState<{
+    linkIsThere: Boolean;
+    link: string;
+  }>({
+    linkIsThere: false,
     link: "",
   });
 
@@ -65,8 +70,10 @@ function App() {
           </div>
         </div>
 
-        {appCtx.link ? (
-          <div
+        {appCtx.linkIsThere ? (
+          <motion.div
+            initial={{ opacity: 2, translateY: -200, rotate: -10 }}
+            animate={{ opacity: 1, translateY: 0, rotate: 0 }}
             style={{
               height: `calc(${windowCtx.height}px + 150px)`,
               width: `${windowCtx.width}px`,
@@ -130,7 +137,7 @@ function App() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ) : (
           <div
             style={{
@@ -141,9 +148,20 @@ function App() {
             <input
               placeholder="Paste the Youtube Link Here."
               type="text"
+              value={appCtx.link}
+              onChange={(e) =>
+                setAppCtx((p: any) => ({ ...p, link: e.target.value }))
+              }
               className="w-100 bg-black/40 p-3 text-2xl rounded-xl text-white/90 border border-black/30"
             />
-            <button className="transition-all duration-100 py-2 text-2xl w-full bg-linear-to-b from-[hsla(27.123,45%,40%,0.8)] to-[hsla(27.123,45%,30%,0.8)] text-white/90 flex justify-center items-center gap-3 rounded-xl shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.1),0_1px_1px_1px_rgba(0,0,0,0.2)] active:shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0),0_0px_1px_1px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_2px_rgba(0,0,0,0.2)]">
+            <button
+              onClick={() => {
+                if (appCtx.link) {
+                  setAppCtx((p: any) => ({ ...p, linkIsThere: true }));
+                }
+              }}
+              className="transition-all duration-100 py-2 text-2xl w-full bg-linear-to-b from-[hsla(27.123,45%,40%,0.8)] to-[hsla(27.123,45%,30%,0.8)] text-white/90 flex justify-center items-center gap-3 rounded-xl shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.1),0_1px_1px_1px_rgba(0,0,0,0.2)] active:shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0),0_0px_1px_1px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_2px_rgba(0,0,0,0.2)]"
+            >
               <Icons.PlayIcon />
               PLAY
             </button>
