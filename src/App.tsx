@@ -14,8 +14,20 @@ function App() {
     link: "",
   });
 
-  const [playerCtx, setPlayerCtx] = React.useState<{ playing: Boolean }>({
+  const [playerCtx, setPlayerCtx] = React.useState<{
+    playing: Boolean;
+    time: Number;
+    progressBarCtx: {
+      isDragging: Boolean;
+      progress: number;
+    };
+  }>({
     playing: false,
+    time: 0,
+    progressBarCtx: {
+      isDragging: false,
+      progress: 0,
+    },
   });
 
   const [windowCtx, _] = React.useState<{
@@ -27,6 +39,9 @@ function App() {
     height: 540,
     rotation: { x: 0, y: 0, z: 0 },
   });
+
+  const barRef = React.useRef<any>(null);
+
   return (
     <>
       <div
@@ -118,21 +133,91 @@ function App() {
                       <img src="pause.webp" />
                     )}
                   </div>
-                  <div
-                    onClick={(e) => {
-                      console.log(e.clientX);
-                    }}
-                    className="relative h-3 w-[80%] flex justify-start items-center"
-                  >
-                    <div className="w-full h-2 bg-[rgba(0,0,0,0.1)] border border-black/50 z-100 backdrop-blur-xl rounded-full"></div>
+                  <div className="w-full h-full flex flex-col justify-center items-center gap-4">
                     <div
-                      style={{
-                        boxShadow: playerCtx.playing
-                          ? "0 0 20px 5px #EC7E16"
-                          : "0 0 5px 5px rgba(100, 50, 0, 0.5)",
+                      ref={barRef}
+                      onMouseDown={(e) => {
+                        const rect = barRef.current.getBoundingClientRect();
+                        const newProgress =
+                          ((e.clientX - rect.left) / rect.width) * 100;
+                        setPlayerCtx((p) => ({
+                          ...p,
+                          progressBarCtx: {
+                            ...p.progressBarCtx,
+                            progress: newProgress,
+                            isDragging: true,
+                          },
+                        }));
                       }}
-                      className="absolute w-[100%] rounded-full h-2 shadow-[0_0_20px_10px_orange] bg-[orange] transition-all duration-200"
-                    ></div>
+                      onMouseMove={(e) => {
+                        if (!playerCtx.progressBarCtx.isDragging) return;
+                        const rect = barRef.current.getBoundingClientRect();
+                        const newProgress =
+                          ((e.clientX - rect.left) / rect.width) * 100;
+                        setPlayerCtx((p) => ({
+                          ...p,
+                          progressBarCtx: {
+                            ...p.progressBarCtx,
+                            progress: Math.min(100, Math.max(0, newProgress)),
+                          },
+                        }));
+                      }}
+                      onMouseUp={() =>
+                        setPlayerCtx((p) => ({
+                          ...p,
+                          progressBarCtx: {
+                            ...p.progressBarCtx,
+                            isDragging: false,
+                          },
+                        }))
+                      }
+                      onMouseLeave={() =>
+                        setPlayerCtx((p) => ({
+                          ...p,
+                          progressBarCtx: {
+                            ...p.progressBarCtx,
+                            isDragging: false,
+                          },
+                        }))
+                      }
+                      className="relative h-3 w-full flex justify-start items-center"
+                    >
+                      <div className="w-full h-2 bg-[rgba(0,0,0,0.1)] border border-black/50 z-100 backdrop-blur-[10px] rounded-full"></div>
+                      <div
+                        style={{
+                          width: `${playerCtx.progressBarCtx.progress || 0}%`,
+                          boxShadow: playerCtx.playing
+                            ? "0 0 20px 5px #EC7E16"
+                            : "0 0 5px 5px rgba(100, 50, 0, 0.5)",
+                        }}
+                        className="absolute rounded-full h-2 shadow-[0_0_20px_10px_orange] bg-[orange] transition-all duration-200"
+                      ></div>
+                    </div>
+                    <div className=" flex justify-between items-center w-full h-10">
+                      <div className=" h-full gap-2 flex justify-center items-center">
+                        <button
+                          style={{
+                            boxShadow: playerCtx.playing
+                              ? "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1), inset -1px 1px 1px 1px rgba(255,165,0,0.1)"
+                              : "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1)",
+                          }}
+                          className="bg-black/20 p-2 border border-white/5 rounded-full justify-center items-center flex  text-white/70 active:scale-90 transition-all duration-200"
+                        >
+                          <Icons.StepBack />
+                        </button>
+                        <button
+                          style={{
+                            boxShadow: playerCtx.playing
+                              ? "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1), inset -1px 1px 1px 1px rgba(255,165,0,0.1)"
+                              : "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1)",
+                          }}
+                          className="bg-black/20 p-2 border border-white/5 rounded-full justify-center items-center flex  text-white/70 active:scale-90 transition-all duration-200"
+                        >
+                          <Icons.StepForward />
+                        </button>
+                      </div>
+                      <div className="w-30 h-full bg-red-500"></div>
+                    </div>
                   </div>
                 </div>
               </div>
