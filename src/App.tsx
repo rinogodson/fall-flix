@@ -42,6 +42,8 @@ function App() {
 
   const barRef = React.useRef<any>(null);
 
+  const ytPlayer = React.useRef<any>(null);
+
   return (
     <>
       <div
@@ -110,6 +112,7 @@ function App() {
                   className="w-full absolute top-0 left-0"
                 ></div>
                 <iframe
+                  ref={ytPlayer}
                   style={{ height: `${windowCtx.height}px` }}
                   src="https://www.youtube.com/embed/WXk7yDqsKxs?si=lgrT2B_V_OAMZLCK&amp;controls=0"
                   title="YouTube video player"
@@ -180,9 +183,9 @@ function App() {
                           },
                         }))
                       }
-                      className="relative h-3 w-full flex justify-start items-center"
+                      className="relative h-2 hover:h-5 w-full flex justify-start items-center transition-all duration-200"
                     >
-                      <div className="w-full h-2 bg-[rgba(0,0,0,0.1)] border border-black/50 z-100 backdrop-blur-[10px] rounded-full"></div>
+                      <div className="w-full h-full bg-[rgba(0,0,0,0.1)] border border-black/50 z-100 backdrop-blur-[10px] rounded-full"></div>
                       <div
                         style={{
                           width: `${playerCtx.progressBarCtx.progress || 0}%`,
@@ -190,7 +193,7 @@ function App() {
                             ? "0 0 20px 5px #EC7E16"
                             : "0 0 5px 5px rgba(100, 50, 0, 0.5)",
                         }}
-                        className="absolute rounded-full h-2 shadow-[0_0_20px_10px_orange] bg-[orange] transition-all duration-200"
+                        className="absolute rounded-full h-full shadow-[0_0_20px_10px_orange] bg-[orange] transition-shadow duration-200"
                       ></div>
                     </div>
                     <div className=" flex justify-between items-center w-full h-10">
@@ -216,7 +219,35 @@ function App() {
                           <Icons.StepForward />
                         </button>
                       </div>
-                      <div className="w-30 h-full bg-red-500"></div>
+                      <p className="text-white/70">Harvard's CS Course 2025</p>
+                      <div
+                        style={{
+                          boxShadow: playerCtx.playing
+                            ? "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1), inset 1px 1px 1px 1px rgba(255,165,0,0.1)"
+                            : "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1)",
+                        }}
+                        className="w-30 gap-2 h-full bg-black/20 hover:scale-130 transition-transform duration-300 p-2 border border-white/5 rounded-full justify-around px-4 items-center flex  text-white/70"
+                      >
+                        <Icons.Volume2 />
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          id="volume"
+                          className={`w-full h-2 appearance-none rounded-lg bg-black/80 border border-white/20 outline-none transition-all duration-300
+                                      [&::-webkit-slider-thumb]:appearance-none
+                                      [&::-webkit-slider-thumb]:w-2
+                                      [&::-webkit-slider-thumb]:h-4
+                                      [&::-webkit-slider-thumb]:rounded-full
+                                      [&::-webkit-slider-thumb]:bg-white/60
+                                      [&::-webkit-slider-thumb]:border
+                                      [&::-webkit-slider-thumb]:backdrop-blur-xl
+                                      [&::-webkit-slider-thumb]:border-white/80
+                                      [&::-webkit-slider-thumb]:cursor-pointer
+                                      [&::-webkit-slider-thumb]:transition-transform
+                                      [&::-webkit-slider-thumb]:hover:scale-125`}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
