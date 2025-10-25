@@ -15,7 +15,8 @@
     "motion": "^12.23.24",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "tailwindcss": "^4.1.15"
+    "tailwindcss": "^4.1.15",
+    "youtube-iframe-ctrl": "^1.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

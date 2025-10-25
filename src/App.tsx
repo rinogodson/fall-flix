@@ -2,6 +2,7 @@ import React from "react";
 import songs from "./providers/autumn-giver";
 import { motion } from "motion/react";
 import * as Icons from "lucide-react";
+import YouTubeIFrameCtrl from "youtube-iframe-ctrl";
 
 function App() {
   const mosPos = useMousePos();
@@ -42,7 +43,22 @@ function App() {
 
   const barRef = React.useRef<any>(null);
 
-  const ytPlayer = React.useRef<any>(null);
+  const ytPlayerRef = React.useRef<any>(null);
+
+  const [ytCtx, setYtCtx] = React.useState<{ playFn: Function }>({
+    playFn: () => {},
+  });
+
+  React.useEffect(() => {
+    if (appCtx.linkIsThere && ytPlayerRef.current) {
+      const youtubectrl = new YouTubeIFrameCtrl(ytPlayerRef.current);
+      const play = async () => {
+        await youtubectrl.mute();
+        await youtubectrl.play();
+      };
+      setYtCtx({ playFn: play });
+    }
+  }, [appCtx.linkIsThere]);
 
   return (
     <>
@@ -112,9 +128,9 @@ function App() {
                   className="w-full absolute top-0 left-0"
                 ></div>
                 <iframe
-                  ref={ytPlayer}
+                  ref={ytPlayerRef}
                   style={{ height: `${windowCtx.height}px` }}
-                  src="https://www.youtube.com/embed/WXk7yDqsKxs?si=lgrT2B_V_OAMZLCK&amp;controls=0"
+                  src="https://www.youtube.com/embed/WXk7yDqsKxs?si=lgrT2B_V_OAMZLCK&amp;controls=0&enablejsapi=1"
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
@@ -127,6 +143,11 @@ function App() {
                   <div
                     onClick={() => {
                       setPlayerCtx((p: any) => ({ ...p, playing: !p.playing }));
+                      ytCtx.playFn();
+                      // ytPlayer.current.contentWindow.postMessage(
+                      //   '{ "event": "command", func: "playVideo" }',
+                      //   "*",
+                      // );
                     }}
                     className="h-[75%] aspect-square scale-100 hover:scale-120 active:scale-100 transition-all duration-200"
                   >

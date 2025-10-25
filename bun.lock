@@ -10,6 +10,7 @@
         "react": "^19.1.1",
         "react-dom": "^19.1.1",
         "tailwindcss": "^4.1.15",
+        "youtube-iframe-ctrl": "^1.0.3",
       },
       "devDependencies": {
         "@eslint/js": "^9.36.0",
@@ -460,6 +461,8 @@
     "word-wrap": ["word-wrap@1.2.5", "", {}, "sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA=="],
 
     "yocto-queue": ["yocto-queue@0.1.0", "", {}, "sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q=="],
+
+    "youtube-iframe-ctrl": ["youtube-iframe-ctrl@1.0.3", "", {}, "sha512-F4OBLrD97nhdLjYBLfYXpPu9ACDv+nG20/IDAgnV5ABeqbjFZ+vJUDxc5yz86P9lViefnxUHDA8ybInLpkVBTQ=="],
 
     "@eslint-community/eslint-utils/eslint-visitor-keys": ["eslint-visitor-keys@3.4.3", "", {}, "sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag=="],
 
