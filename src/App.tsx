@@ -45,18 +45,33 @@ function App() {
 
   const ytPlayerRef = React.useRef<any>(null);
 
-  const [ytCtx, setYtCtx] = React.useState<{ playFn: Function }>({
+  const [ytCtx, setYtCtx] = React.useState<{
+    playFn: Function;
+    pauseFn: Function;
+    volumeSet: Function;
+  }>({
     playFn: () => {},
+    pauseFn: () => {},
+    volumeSet: () => {},
   });
 
   React.useEffect(() => {
     if (appCtx.linkIsThere && ytPlayerRef.current) {
       const youtubectrl = new YouTubeIFrameCtrl(ytPlayerRef.current);
+
       const play = async () => {
-        await youtubectrl.mute();
         await youtubectrl.play();
       };
-      setYtCtx({ playFn: play });
+
+      const pause = async () => {
+        await youtubectrl.pause();
+      };
+
+      const setVolume = async (val: Number) => {
+        await youtubectrl.command("setVolume", [val]);
+      };
+
+      setYtCtx({ playFn: play, pauseFn: pause, volumeSet: setVolume });
     }
   }, [appCtx.linkIsThere]);
 
@@ -130,7 +145,7 @@ function App() {
                 <iframe
                   ref={ytPlayerRef}
                   style={{ height: `${windowCtx.height}px` }}
-                  src="https://www.youtube.com/embed/WXk7yDqsKxs?si=lgrT2B_V_OAMZLCK&amp;controls=0&enablejsapi=1"
+                  src="https://www.youtube.com/embed/WXk7yDqsKxs?&rel=0&amp;controls=0&enablejsapi=1"
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
@@ -143,7 +158,8 @@ function App() {
                   <div
                     onClick={() => {
                       setPlayerCtx((p: any) => ({ ...p, playing: !p.playing }));
-                      ytCtx.playFn();
+                      if (playerCtx.playing) ytCtx.pauseFn();
+                      else ytCtx.playFn();
                       // ytPlayer.current.contentWindow.postMessage(
                       //   '{ "event": "command", func: "playVideo" }',
                       //   "*",
@@ -255,6 +271,9 @@ function App() {
                           min="0"
                           max="100"
                           id="volume"
+                          onChange={(e) => {
+                            ytCtx.volumeSet(Number(e.target.value));
+                          }}
                           className={`w-full h-2 appearance-none rounded-lg bg-black/80 border border-white/20 outline-none transition-all duration-300
                                       [&::-webkit-slider-thumb]:appearance-none
                                       [&::-webkit-slider-thumb]:w-2
