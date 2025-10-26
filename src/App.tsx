@@ -226,7 +226,7 @@ function App() {
       />
       <div
         id="bg"
-        className="absolute z-[-100] w-screen h-screen bg-[url(bg.jpg)] bg-cover blur-[10px]"
+        className="absolute z-[-100] w-screen h-screen bg-[url(/bg.jpg)] bg-cover blur-[10px]"
       ></div>
 
       <div className="perspective-distant perspective-origin-center h-screen w-screen flex flex-col gap-10 justify-center items-center">
@@ -404,7 +404,7 @@ function App() {
               width: `${windowCtx.width}px`,
               translate: `${(mosPos.x - window.innerHeight / 2) * 0.01}px ${(mosPos.y - window.innerWidth / 2) * 0.01}px`,
             }}
-            className="bg-[url(texture.webp)] bg-cover p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
+            className="bg-[url(/texture.webp)] bg-cover p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
           >
             <div
               style={{
@@ -430,7 +430,7 @@ function App() {
                   className="h-full w-full"
                 ></iframe>
               </div>
-              <div className="h-full overflow-hidden bg-[url(texture-rotated.webp)] bg-cover">
+              <div className="h-full overflow-hidden bg-[url(/texture-rotated.webp)] bg-cover">
                 <div className="gap-6 h-full w-full border-t-2 border-black/5 bg-linear-to-b from-black/20 to-black/50 flex justify-around items-center px-4">
                   <div
                     onClick={() => {
@@ -445,9 +445,9 @@ function App() {
                     className="h-[75%] aspect-square scale-100 hover:scale-120 active:scale-100 transition-all duration-200"
                   >
                     {playerCtx.playing ? (
-                      <img src="play.webp" />
+                      <img src="/play.webp" />
                     ) : (
-                      <img src="pause.webp" />
+                      <img src="/pause.webp" />
                     )}
                   </div>
                   <div className="w-full h-full flex flex-col justify-center items-center gap-4">
@@ -597,7 +597,7 @@ function App() {
             style={{
               translate: `${(mosPos.x - window.innerHeight / 2) * 0.01}px ${(mosPos.y - window.innerWidth / 2) * 0.01}px`,
             }}
-            className="gap-3 flex flex-col w-fit h-fit bg-[url(texture.webp)] bg-cover p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
+            className="gap-3 flex flex-col w-fit h-fit bg-[url(/texture.webp)] bg-cover p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
           >
             <input
               placeholder="Paste the Youtube Link Here."
