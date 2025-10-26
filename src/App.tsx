@@ -80,6 +80,8 @@ function App() {
   const ytPlayerRef = React.useRef<any>(null);
 
   const [ytCtx, setYtCtx] = React.useState<{
+    title: string;
+    volume: number;
     playFn: Function;
     pauseFn: Function;
     volumeSet: Function;
@@ -87,6 +89,8 @@ function App() {
     duration: number;
     currentTime: number;
   }>({
+    title: "",
+    volume: 100,
     playFn: () => {},
     pauseFn: () => {},
     volumeSet: () => {},
@@ -121,34 +125,57 @@ function App() {
       };
 
       setYtCtx({
+        title: "",
         playFn: play,
         pauseFn: pause,
         volumeSet: setVolume,
         setTime: setTime,
         duration: 0,
         currentTime: 0,
+        volume: 100,
       });
 
-      const handleYtMessage = (event: any) => {
-        // console.log("Raw event.detail:", event.detail);
-        // console.log("Extracted info:", event.detail?.info);
+      const fetchYouTubeTitle = async (link: string) => {
+        const url = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${link}`;
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+          }
+
+          const json = await response.json();
+          console.log(json);
+
+          const title = json.title;
+          console.log(title);
+          return title;
+        } catch (error: any) {
+          console.error(error.message);
+          return "";
+        }
+      };
+
+      const handleYtMessage = async (event: any) => {
         if (
           event.detail &&
           event.detail.event === "infoDelivery" &&
           event.detail.info
         ) {
           const { duration, currentTime } = event.detail.info;
+          const title = await fetchYouTubeTitle(appCtx.videoId);
 
           if (duration === undefined) {
             setYtCtx((prev) => ({
               ...prev,
               currentTime: Math.floor(currentTime),
+              title: title,
             }));
           } else {
             setYtCtx((prev) => ({
               ...prev,
               duration: Math.floor(duration),
               currentTime: Math.floor(currentTime),
+              title: title,
             }));
           }
         }
@@ -176,7 +203,7 @@ function App() {
   }, [ytCtx.currentTime, ytCtx.duration, playerCtx.progressBarCtx.isDragging]);
 
   // React.useEffect(() => {
-  //   console.log(ytCtx);
+  //   console.log(ytCtx.duration, ytCtx.currentTime);
   // }, [ytCtx]);
 
   return (
@@ -346,6 +373,11 @@ function App() {
                     <div className=" flex justify-between items-center w-full h-10">
                       <div className=" h-full gap-2 flex justify-center items-center">
                         <button
+                          onClick={() => {
+                            if (ytCtx.currentTime > 10)
+                              ytCtx.setTime(ytCtx.currentTime - 10);
+                            else ytCtx.setTime(0);
+                          }}
                           style={{
                             boxShadow: playerCtx.playing
                               ? "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1), inset -1px 1px 1px 1px rgba(255,165,0,0.1)"
@@ -356,6 +388,11 @@ function App() {
                           <Icons.StepBack />
                         </button>
                         <button
+                          onClick={() => {
+                            if (ytCtx.currentTime < ytCtx.duration - 11)
+                              ytCtx.setTime(ytCtx.currentTime + 10);
+                            else ytCtx.setTime(ytCtx.duration);
+                          }}
                           style={{
                             boxShadow: playerCtx.playing
                               ? "inset 0 1px 1px 1px rgba(255,255,255,0.1),0 1px 1px 1px rgba(0,0,0,0.1), inset -1px 1px 1px 1px rgba(255,165,0,0.1)"
@@ -366,7 +403,9 @@ function App() {
                           <Icons.StepForward />
                         </button>
                       </div>
-                      <p className="text-white/70">Harvard's CS Course 2025</p>
+                      <p className="text-white/70 w-[60%] whitespace-nowrap overflow-hidden overflow-ellipsis">
+                        {ytCtx.title}
+                      </p>
                       <div
                         style={{
                           boxShadow: playerCtx.playing
@@ -381,8 +420,13 @@ function App() {
                           min="0"
                           max="100"
                           id="volume"
+                          value={ytCtx.volume}
                           onChange={(e) => {
                             ytCtx.volumeSet(Number(e.target.value));
+                            setYtCtx((p: any) => ({
+                              ...p,
+                              volume: Number(e.target.value),
+                            }));
                           }}
                           className={`w-full h-2 appearance-none rounded-lg bg-black/80 border border-white/20 outline-none transition-all duration-300
                                       [&::-webkit-slider-thumb]:appearance-none
@@ -440,11 +484,6 @@ function App() {
             </button>
           </div>
         )}
-        {/* <div className="bg-black/10 w-full h-20 flex justify-center items-center"> */}
-        {/*   <Icons.SkipBack /> */}
-        {/*   <Icons.Play /> */}
-        {/*   <Icons.SkipForward /> */}
-        {/* </div> */}
       </div>
     </>
   );
