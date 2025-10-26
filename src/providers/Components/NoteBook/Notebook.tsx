@@ -21,7 +21,9 @@ function Notebook() {
         </p>
         <GripHorizontal />
       </div>
-      <div className="w-full h-full bg-black/30 rounded-2xl rounded-b-none border border-white/10 border-b-0"></div>
+      <div className="w-full h-full bg-black/30 rounded-2xl rounded-b-none border border-white/10 border-b-0">
+        <textarea className="h-full w-full p-5 text-2xl resize-none" />
+      </div>
     </div>
   );
 }
