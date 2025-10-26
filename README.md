@@ -1,7 +1,4 @@
 # Fall Flix
-
-![Static Badge](https://img.shields.io/badge/Tailwind CSS-494949?style=flat&logo=tailwindcss&labelColor=%231b1b1b)
-
 ![Static Badge](https://img.shields.io/badge/React-494949?style=flat&logo=react&labelColor=%231b1b1b)
 
 It's not meant for binge watching, it's for those "fall season lovers" who enjoy watching their favorite YouTube courses in a cozy, fall themed setting. It has features like notes, customizable settings, and more. Paste in your YouTube link and enjoy!
