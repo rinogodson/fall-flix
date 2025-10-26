@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import * as Icons from "lucide-react";
 import YouTubeIFrameCtrl from "youtube-iframe-ctrl";
 import Maple from "./providers/Components/Maple";
+import Notebook from "./providers/Components/NoteBook/Notebook";
 
 function App() {
   const mosPos = useMousePos();
@@ -485,6 +486,7 @@ function App() {
           </div>
         )}
       </div>
+      <Notebook />
     </>
   );
 }
