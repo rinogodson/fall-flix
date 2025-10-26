@@ -8,6 +8,37 @@ import Maple from "./providers/Components/Maple";
 function App() {
   const mosPos = useMousePos();
 
+  function getVideoID(url: string): string | null {
+    try {
+      const urlObj = new URL(url);
+
+      if (urlObj.hostname === "youtu.be") {
+        return urlObj.pathname.slice(1);
+      }
+
+      if (
+        urlObj.hostname.includes("youtube.com") ||
+        urlObj.hostname.includes("youtube-nocookie.com")
+      ) {
+        if (urlObj.pathname === "/watch") {
+          return urlObj.searchParams.get("v");
+        }
+
+        if (urlObj.pathname.startsWith("/embed/")) {
+          return urlObj.pathname.split("/")[2];
+        }
+
+        if (urlObj.pathname.startsWith("/v/")) {
+          return urlObj.pathname.split("/")[2];
+        }
+      }
+    } catch (error) {
+      return null;
+    }
+
+    return null;
+  }
+
   const [appCtx, setAppCtx] = React.useState<{
     videoId: string;
     linkIsThere: Boolean;
@@ -391,8 +422,15 @@ function App() {
             />
             <button
               onClick={() => {
-                if (appCtx.link) {
-                  setAppCtx((p: any) => ({ ...p, linkIsThere: true }));
+                if (appCtx.link && getVideoID(appCtx.link)) {
+                  const id = getVideoID(appCtx.link);
+                  setAppCtx((p: any) => ({
+                    ...p,
+                    linkIsThere: true,
+                    videoId: id,
+                  }));
+                } else {
+                  window.alert("Enter a valid Youtube Link");
                 }
               }}
               className="transition-all duration-100 py-2 text-2xl w-full bg-linear-to-b from-[hsla(27.123,45%,40%,0.8)] to-[hsla(27.123,45%,30%,0.8)] text-white/90 flex justify-center items-center gap-3 rounded-xl shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.1),0_1px_1px_1px_rgba(0,0,0,0.2)] active:shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0),0_0px_1px_1px_rgba(0,0,0,0.2)] hover:shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_2px_rgba(0,0,0,0.2)]"
