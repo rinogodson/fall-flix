@@ -1,13 +1,22 @@
 import React from "react";
-import songs from "./providers/autumn-giver";
-import { motion } from "motion/react";
+// import songs from "./providers/autumn-giver";
+import { AnimatePresence, motion } from "motion/react";
 import * as Icons from "lucide-react";
 import YouTubeIFrameCtrl from "youtube-iframe-ctrl";
 import Maple from "./providers/Components/Maple";
 import Notebook from "./providers/Components/NoteBook/Notebook";
+import Modal from "./providers/Components/Modal/Modal";
 
 function App() {
   const mosPos = useMousePos();
+
+  const [showModal, setShowModal] = React.useState(false);
+
+  const [leafCtx, setLeafCtx] = React.useState({
+    number: 14,
+    leafSize: 24,
+    wind: 3,
+  });
 
   function getVideoID(url: string): string | null {
     try {
@@ -209,49 +218,183 @@ function App() {
 
   return (
     <>
-      <Maple number={10} leafSize={24} wind={3} image="/maple.webp" />
+      <Maple
+        number={leafCtx.number}
+        leafSize={leafCtx.leafSize}
+        wind={leafCtx.wind}
+        image="/maple.webp"
+      />
       <div
         id="bg"
         className="absolute z-[-100] w-screen h-screen bg-[url(bg.jpg)] bg-cover blur-[10px]"
       ></div>
 
       <div className="perspective-distant perspective-origin-center h-screen w-screen flex flex-col gap-10 justify-center items-center">
-        <div
-          style={{
-            translate: `0px ${mosPos.y * 0.01}px`,
-          }}
-          className="absolute left-5 z-100 rotate-y-90 hover:rotate-y-0 opacity-80 hover:opacity-100 scale-110 hover:scale-100 origin-left transition-all duration-300 w-100 h-150 bg-linear-to-b to-black/50 from-black/40 p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
-        >
-          <div className="w-full h-full grid grid-cols-2 gap-5">
-            {songs.map((item) => {
-              // @ts-ignore
-              const LucideIcon: any = Icons[item.icon];
-              return (
-                <div
-                  key={item.name}
-                  className="flex-col gap-2 w-full h-full bg-white/10 rounded-2xl border border-white/20 flex justify-center items-center"
-                >
-                  {LucideIcon ? <LucideIcon size={35} /> : null}
-                  {item.name}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div
-          style={{
-            translate: `0px ${mosPos.y * 0.01}px`,
-          }}
-          className="absolute right-5 z-100 -rotate-y-90 hover:rotate-y-0 scale-110 hover:scale-100 origin-right transition-all duration-100 w-100 h-150 bg-linear-to-b to-black/50 from-black/40 p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]"
-        >
-          <div className="w-full h-full flex flex-col gap-3 justify-center items-center">
-            <p className="text-5xl">19:00</p>
-            <button className="bg-linear-to-b from-white to-white/70 text-black px-6 py-2 text-2xl rounded-full">
-              Start
-            </button>
-          </div>
-        </div>
+        {/* <div */}
+        {/*   style={{ */}
+        {/*     translate: `0px ${mosPos.y * 0.01}px`, */}
+        {/*   }} */}
+        {/*   className="absolute left-5 z-100 rotate-y-90 hover:rotate-y-0 opacity-80 hover:opacity-100 scale-110 hover:scale-100 origin-left transition-all duration-300 w-100 h-150 bg-linear-to-b to-black/50 from-black/40 p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]" */}
+        {/* > */}
+        {/*   <div className="w-full h-full grid grid-cols-2 gap-5"> */}
+        {/*     {songs.map((item) => { */}
+        {/*       // @ts-ignore */}
+        {/*       const LucideIcon: any = Icons[item.icon]; */}
+        {/*       return ( */}
+        {/*         <div */}
+        {/*           key={item.name} */}
+        {/*           className="flex-col gap-2 w-full h-full bg-white/10 rounded-2xl border border-white/20 flex justify-center items-center" */}
+        {/*         > */}
+        {/*           {LucideIcon ? <LucideIcon size={35} /> : null} */}
+        {/*           {item.name} */}
+        {/*         </div> */}
+        {/*       ); */}
+        {/*     })} */}
+        {/*   </div> */}
+        {/* </div> */}
+        {/* <div */}
+        {/*   style={{ */}
+        {/*     translate: `0px ${mosPos.y * 0.01}px`, */}
+        {/*   }} */}
+        {/*   className="absolute right-5 z-100 -rotate-y-90 hover:rotate-y-0 scale-110 hover:scale-100 origin-right transition-all duration-100 w-100 h-150 bg-linear-to-b to-black/50 from-black/40 p-5 rounded-[2em] backdrop-blur-[10px] shadow-[inset_0_1px_1px_1px_rgba(255,255,255,0.2),0_1px_1px_1px_rgba(0,0,0,0.1)]" */}
+        {/* > */}
+        {/*   <div className="w-full h-full flex flex-col gap-3 justify-center items-center"> */}
+        {/*     <p className="text-5xl">19:00</p> */}
+        {/*     <button className="bg-linear-to-b from-white to-white/70 text-black px-6 py-2 text-2xl rounded-full"> */}
+        {/*       Start */}
+        {/*     </button> */}
+        {/*   </div> */}
+        {/* </div> */}
 
+        <button
+          onClick={() => {
+            setShowModal(true);
+          }}
+          className="hover:scale-110 active:scale-100 transition-all duration-200 flex justify-center items-center w-12 aspect-square bg-linear-to-br from-white/20 absolute bottom-10 right-10 rounded-full border-2 border-white/20"
+        >
+          <Icons.Settings />
+        </button>
+        <AnimatePresence>
+          {showModal && (
+            <Modal
+              onClose={() => {
+                setShowModal(false);
+              }}
+            >
+              <div className="w-full p-10 pt-5 flex flex-col gap-5">
+                <div className="flex justify-between items-center gap-2 text-3xl">
+                  <p>Count:</p>
+
+                  <div className="flex justify-center items-center gap-2">
+                    <input
+                      readOnly
+                      type="text"
+                      value={leafCtx.number}
+                      className="flex text-2xl justify-center items-center  text-center rounded-xl h-10 w-20 border border-white/30"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <button
+                        onClick={() => {
+                          setLeafCtx((p: typeof leafCtx) => ({
+                            ...p,
+                            number: p.number + 1,
+                          }));
+                        }}
+                        className="active:bg-white/20 bg-white/10 w-fit h-fit rounded-[5px]"
+                      >
+                        <Icons.ChevronUp />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setLeafCtx((p: typeof leafCtx) => ({
+                            ...p,
+                            number: p.number - 1,
+                          }));
+                        }}
+                        className="active:bg-white/20 bg-white/10 w-fit h-fit rounded-[5px]"
+                      >
+                        <Icons.ChevronDown />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center gap-2 text-3xl w-80">
+                  <p>Leaf Size:</p>
+
+                  <div className="flex justify-center items-center gap-2">
+                    <input
+                      readOnly
+                      type="text"
+                      value={leafCtx.leafSize}
+                      className="flex text-2xl justify-center items-center  text-center rounded-xl h-10 w-20 border border-white/30"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <button
+                        onClick={() => {
+                          setLeafCtx((p: typeof leafCtx) => ({
+                            ...p,
+                            leafSize: p.leafSize + 1,
+                          }));
+                        }}
+                        className="active:bg-white/20 bg-white/10 w-fit h-fit rounded-[5px]"
+                      >
+                        <Icons.ChevronUp />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setLeafCtx((p: typeof leafCtx) => ({
+                            ...p,
+                            leafSize: p.leafSize - 1,
+                          }));
+                        }}
+                        className="active:bg-white/20 bg-white/10 w-fit h-fit rounded-[5px]"
+                      >
+                        <Icons.ChevronDown />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center text-3xl">
+                  <p>Wind:</p>
+                  <div className="flex justify-center items-center gap-2">
+                    <input
+                      readOnly
+                      type="text"
+                      value={leafCtx.wind}
+                      className="flex text-2xl justify-center items-center  text-center rounded-xl h-10 w-20 border border-white/30"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <button
+                        onClick={() => {
+                          setLeafCtx((p: typeof leafCtx) => ({
+                            ...p,
+                            wind: p.wind + 1,
+                          }));
+                        }}
+                        className="active:bg-white/20 bg-white/10 w-fit h-fit rounded-[5px]"
+                      >
+                        <Icons.ChevronUp />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setLeafCtx((p: typeof leafCtx) => ({
+                            ...p,
+                            wind: p.wind - 1,
+                          }));
+                        }}
+                        className="active:bg-white/20 bg-white/10 w-fit h-fit rounded-[5px]"
+                      >
+                        <Icons.ChevronDown />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Modal>
+          )}
+        </AnimatePresence>
         {appCtx.linkIsThere ? (
           <motion.div
             initial={{ opacity: 2, translateY: -200, rotate: -10 }}
