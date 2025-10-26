@@ -3,6 +3,7 @@ import songs from "./providers/autumn-giver";
 import { motion } from "motion/react";
 import * as Icons from "lucide-react";
 import YouTubeIFrameCtrl from "youtube-iframe-ctrl";
+import Maple from "./providers/Components/Maple";
 
 function App() {
   const mosPos = useMousePos();
@@ -149,10 +150,12 @@ function App() {
 
   return (
     <>
+      <Maple number={10} leafSize={24} wind={3} image="/maple.webp" />
       <div
         id="bg"
         className="absolute z-[-100] w-screen h-screen bg-[url(bg.jpg)] bg-cover blur-[10px]"
       ></div>
+
       <div className="perspective-distant perspective-origin-center h-screen w-screen flex flex-col gap-10 justify-center items-center">
         <div
           style={{
