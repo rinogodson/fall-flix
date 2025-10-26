@@ -226,7 +226,7 @@ function App() {
       />
       <div
         id="bg"
-        className="absolute z-[-100] w-screen h-screen bg-[url(/bg.jpg)] bg-cover blur-[10px]"
+        className="absolute z-[-100] w-screen h-screen bg-[url(/bg.webp)] bg-cover blur-[10px]"
       ></div>
 
       <div className="perspective-distant perspective-origin-center h-screen w-screen flex flex-col gap-10 justify-center items-center">
