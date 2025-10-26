@@ -8,9 +8,11 @@ function App() {
   const mosPos = useMousePos();
 
   const [appCtx, setAppCtx] = React.useState<{
+    videoId: string;
     linkIsThere: Boolean;
     link: string;
   }>({
+    videoId: "WXk7yDqsKxs",
     linkIsThere: false,
     link: "",
   });
@@ -49,14 +51,25 @@ function App() {
     playFn: Function;
     pauseFn: Function;
     volumeSet: Function;
+    setTime: Function;
+    duration: number;
+    currentTime: number;
   }>({
     playFn: () => {},
     pauseFn: () => {},
     volumeSet: () => {},
+    setTime: () => {},
+    duration: 0,
+    currentTime: 0,
   });
 
   React.useEffect(() => {
-    if (appCtx.linkIsThere && ytPlayerRef.current) {
+    if (appCtx.videoId && appCtx.linkIsThere && ytPlayerRef.current) {
+      ytPlayerRef.current.contentWindow.postMessage(
+        '{"event": "listening"}',
+        "*",
+      );
+
       const youtubectrl = new YouTubeIFrameCtrl(ytPlayerRef.current);
 
       const play = async () => {
@@ -71,9 +84,68 @@ function App() {
         await youtubectrl.command("setVolume", [val]);
       };
 
-      setYtCtx({ playFn: play, pauseFn: pause, volumeSet: setVolume });
+      const setTime = async (val: number) => {
+        await youtubectrl.command("seekTo", [val, true]);
+      };
+
+      setYtCtx({
+        playFn: play,
+        pauseFn: pause,
+        volumeSet: setVolume,
+        setTime: setTime,
+        duration: 0,
+        currentTime: 0,
+      });
+
+      const handleYtMessage = (event: any) => {
+        // console.log("Raw event.detail:", event.detail);
+        // console.log("Extracted info:", event.detail?.info);
+        if (
+          event.detail &&
+          event.detail.event === "infoDelivery" &&
+          event.detail.info
+        ) {
+          const { duration, currentTime } = event.detail.info;
+
+          if (duration === undefined) {
+            setYtCtx((prev) => ({
+              ...prev,
+              currentTime: Math.floor(currentTime),
+            }));
+          } else {
+            setYtCtx((prev) => ({
+              ...prev,
+              duration: Math.floor(duration),
+              currentTime: Math.floor(currentTime),
+            }));
+          }
+        }
+      };
+
+      ytPlayerRef.current.addEventListener("ytmessage", handleYtMessage);
+
+      return () => {
+        ytPlayerRef.current?.removeEventListener("ytmessage", handleYtMessage);
+      };
     }
   }, [appCtx.linkIsThere]);
+
+  React.useEffect(() => {
+    if (!playerCtx.progressBarCtx.isDragging && ytCtx.duration > 0) {
+      const progress = (ytCtx.currentTime / ytCtx.duration) * 100;
+      setPlayerCtx((prev) => ({
+        ...prev,
+        progressBarCtx: {
+          ...prev.progressBarCtx,
+          progress,
+        },
+      }));
+    }
+  }, [ytCtx.currentTime, ytCtx.duration, playerCtx.progressBarCtx.isDragging]);
+
+  // React.useEffect(() => {
+  //   console.log(ytCtx);
+  // }, [ytCtx]);
 
   return (
     <>
@@ -145,7 +217,7 @@ function App() {
                 <iframe
                   ref={ytPlayerRef}
                   style={{ height: `${windowCtx.height}px` }}
-                  src="https://www.youtube.com/embed/WXk7yDqsKxs?&rel=0&amp;controls=0&enablejsapi=1"
+                  src={`https://www.youtube.com/embed/${appCtx.videoId}?rel=0&amp;controls=0&amp;enablejsapi=1`}
                   title="YouTube video player"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   referrerPolicy="strict-origin-when-cross-origin"
@@ -188,6 +260,10 @@ function App() {
                             isDragging: true,
                           },
                         }));
+
+                        ytCtx.setTime(
+                          Math.floor((ytCtx.duration * newProgress) / 100),
+                        );
                       }}
                       onMouseMove={(e) => {
                         if (!playerCtx.progressBarCtx.isDragging) return;
